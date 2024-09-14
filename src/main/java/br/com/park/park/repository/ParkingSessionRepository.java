@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface ParkingSessionRepository extends JpaRepository<ParkingSession, UUID> {
     Optional<ParkingSession> findByLicensePlate(String licensePlate);
+    Optional<ParkingSession> findByIdAndPaid(UUID id, boolean paid);
 }

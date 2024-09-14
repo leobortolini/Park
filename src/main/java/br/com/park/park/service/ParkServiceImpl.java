@@ -24,13 +24,13 @@ public class ParkServiceImpl implements ParkService {
     public ParkReceipt park(String licencePlate, Duration duration) {
         ParkingSession parkingSession = new ParkingSession();
 
-        parkingSession.setPaidHours(duration);
+        parkingSession.setDuration(duration);
         parkingSession.setLicensePlate(licencePlate);
-        parkingSession.setFinishesAt(LocalDateTime.now().plus(duration));
+        parkingSession.setPaid(false);
 
         parkingSession = parkingSessionRepository.save(parkingSession);
 
-        return new ParkReceipt(parkingSession.getId(), parkingSession.getCreatedAt(), parkingSession.getFinishesAt());
+        return new ParkReceipt(parkingSession.getId());
     }
 
     @Override
@@ -39,11 +39,17 @@ public class ParkServiceImpl implements ParkService {
 
         if (parkingSession.isPresent()) {
             ParkingSession session = parkingSession.get();
+            boolean paid = session.isPaid();
+
+            if (!paid) {
+                return new ParkState(session.getId(), null, null, null, ParkStatus.PENDING, false);
+            }
+
             LocalDateTime finalTime = session.getFinishesAt();
             Duration timeLeft = Duration.between(LocalDateTime.now(), finalTime);
             ParkStatus status = timeLeft.isNegative() ? ParkStatus.EXPIRED : ParkStatus.VALID;
 
-            return new ParkState(session.getId(), session.getCreatedAt(), finalTime, formatDuration(timeLeft), status);
+            return new ParkState(session.getId(), session.getCreatedAt(), finalTime, formatDuration(timeLeft), status, true);
         }
 
         throw new ParkingSessionNotFound(String.format("%s licence plate has no parking session", licensePlate));

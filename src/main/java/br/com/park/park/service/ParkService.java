@@ -9,11 +9,12 @@ public interface ParkService {
     ParkReceipt park(String licencePlate, Duration duration);
     ParkState getParkState(String licencePlate);
 
-    record ParkReceipt(UUID identifier, LocalDateTime startedAt, LocalDateTime finishesAt) { }
-    record ParkState(UUID identifier, LocalDateTime startedAt, LocalDateTime finishesAt, String remainingTime, ParkStatus status) { }
+    record ParkReceipt(UUID identifier) { }
+    record ParkState(UUID identifier, LocalDateTime startedAt, LocalDateTime finishesAt, String remainingTime, ParkStatus status, boolean paid) { }
 
     enum ParkStatus {
         VALID,
+        PENDING,
         EXPIRED
     }
 }
