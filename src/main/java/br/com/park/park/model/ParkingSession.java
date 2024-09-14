@@ -20,4 +20,5 @@ public class ParkingSession {
     private String licensePlate;
     @CreationTimestamp
     private LocalDateTime createdAt;
+    private LocalDateTime finishesAt;
 }
