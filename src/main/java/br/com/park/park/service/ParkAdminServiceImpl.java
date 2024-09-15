@@ -41,6 +41,7 @@ public class ParkAdminServiceImpl implements ParkAdminService {
             session.setFinishesAt(now.plus(session.getDuration()));
 
             parkingSessionRepository.save(session);
+            return;
         }
 
         throw new ParkingSessionNotFound(String.format("parking session with id %s not found", id));
