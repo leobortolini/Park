@@ -35,7 +35,7 @@ public class ParkServiceImpl implements ParkService {
 
     @Override
     public ParkState getParkState(String licensePlate) {
-        Optional<ParkingSession> parkingSession = parkingSessionRepository.findByLicensePlate(licensePlate);
+        Optional<ParkingSession> parkingSession = parkingSessionRepository.findFirstByLicensePlate(licensePlate);
 
         if (parkingSession.isPresent()) {
             ParkingSession session = parkingSession.get();
