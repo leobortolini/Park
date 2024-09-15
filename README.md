@@ -7,10 +7,10 @@ This repository contains the solution for the Parking Meter System Tech Challeng
 The original system experienced significant delays and errors in data reading and writing processes, impacting both users and enforcement officers. Our solution aims to resolve these issues by creating an optimized, scalable, and efficient system.
 
 ## Key Features:
-**API Development with Best Practices**: The project focuses on developing RESTful APIs using modern Java practices, ensuring clean architecture, clear separation of concerns, and comprehensive error handling.<br>
-**Data Persistence with JPA**: The system uses Java Persistence API (JPA) for database interaction, ensuring smooth and efficient data storage and retrieval while adhering to best practices for object-relational mapping.<br>
-**Optimized Read/Write Operations**: The project implements efficient strategies to minimize database access, improving the performance of data reading and writing processes.<br>
-**Scalability**: The solution is designed to be scalable, enabling it to handle a growing number of transactions efficiently and making future scaling easier.<br>
+* **API Development with Best Practices**: The project focuses on developing RESTful APIs using modern Java practices, ensuring clean architecture, clear separation of concerns, and comprehensive error handling.<br>
+* **Data Persistence with JPA**: The system uses Java Persistence API (JPA) for database interaction, ensuring smooth and efficient data storage and retrieval while adhering to best practices for object-relational mapping.<br>
+* **Optimized Read/Write Operations**: The project implements efficient strategies to minimize database access, improving the performance of data reading and writing processes.<br>
+* **Scalability**: The solution is designed to be scalable, enabling it to handle a growing number of transactions efficiently and making future scaling easier.<br>
 
 ## Tech Stack
 Backend: Java with Spring Boot<br> 
