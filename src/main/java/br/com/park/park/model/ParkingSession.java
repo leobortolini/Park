@@ -1,6 +1,7 @@
 package br.com.park.park.model;
 
 import br.com.park.park.model.converter.DurationConverter;
+import br.com.park.park.service.ParkService;
 import br.com.park.payment.model.Payment;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -28,4 +29,5 @@ public class ParkingSession {
     private LocalDateTime createdAt;
     private LocalDateTime startsAt;
     private LocalDateTime finishesAt;
+    private ParkService.ParkStatus status;
 }

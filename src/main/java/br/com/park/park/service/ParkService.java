@@ -8,6 +8,7 @@ public interface ParkService {
 
     ParkReceipt park(String licencePlate, Duration duration);
     ParkState getParkState(String licencePlate);
+    void executeParkSessionJob();
 
     record ParkReceipt(UUID identifier) { }
     record ParkState(UUID identifier, LocalDateTime startedAt, LocalDateTime finishesAt, String remainingTime, ParkStatus status, boolean paid) { }
