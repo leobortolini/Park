@@ -27,6 +27,7 @@ public class ParkServiceImpl implements ParkService {
         parkingSession.setDuration(duration);
         parkingSession.setLicensePlate(licencePlate);
         parkingSession.setPaid(false);
+        parkingSession.setStatus(ParkStatus.PENDING);
 
         parkingSession = parkingSessionRepository.save(parkingSession);
 
@@ -35,23 +36,27 @@ public class ParkServiceImpl implements ParkService {
 
     @Override
     public ParkState getParkState(String licensePlate) {
-        Optional<ParkingSession> parkingSession = parkingSessionRepository.findFirstByLicensePlate(licensePlate);
+        Optional<ParkingSession> parkingSession = parkingSessionRepository.findFirstByLicensePlateOrderByCreatedAtDesc(licensePlate);
 
         if (parkingSession.isPresent()) {
             ParkingSession session = parkingSession.get();
-            boolean paid = session.isPaid();
-
-            if (!paid) {
-                return new ParkState(session.getId(), null, null, null, ParkStatus.PENDING, false);
-            }
 
             LocalDateTime finalTime = session.getFinishesAt();
             Duration timeLeft = Duration.between(LocalDateTime.now(), finalTime);
-            ParkStatus status = timeLeft.isNegative() ? ParkStatus.EXPIRED : ParkStatus.VALID;
 
-            return new ParkState(session.getId(), session.getCreatedAt(), finalTime, formatDuration(timeLeft), status, true);
+            return new ParkState(session.getId(), session.getCreatedAt(), finalTime, formatDuration(timeLeft), parkingSession.get().getStatus(), true);
         }
 
         throw new ParkingSessionNotFound(String.format("%s licence plate has no parking session", licensePlate));
+    }
+
+    @Override
+    public void executeParkSessionJob() {
+        parkingSessionRepository.findAll().forEach(parkingSession -> {
+            if (parkingSession.getFinishesAt().isBefore(LocalDateTime.now())) {
+                parkingSession.setStatus(ParkStatus.EXPIRED);
+                parkingSessionRepository.save(parkingSession);
+            }
+        });
     }
 }

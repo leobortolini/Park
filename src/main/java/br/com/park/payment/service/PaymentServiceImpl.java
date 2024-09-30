@@ -4,11 +4,13 @@ import br.com.park.park.model.ParkingSession;
 import br.com.park.park.service.ParkAdminService;
 import br.com.park.payment.model.Payment;
 import br.com.park.payment.repository.PaymentRepository;
+import br.com.park.payment.service.exceptions.InvalidDurationValue;
 import br.com.park.payment.service.exceptions.PaymentNotFound;
 import br.com.park.payment.service.external.PaymentContext;
 import br.com.park.payment.service.external.PaymentType;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -69,6 +71,17 @@ public class PaymentServiceImpl implements PaymentService {
         List<Payment> payments = paymentRepository.findAllByParkingSessionId(parkingSessionId);
 
         return payments.stream().map(payment -> new PaymentReceipt(payment.getId(), payment.getPaymentStatus(), payment.getPaymentType())).toList();
+    }
+
+    @Override
+    public boolean isValidDuration(Duration duration) {
+        try {
+            DurationPrice.fromDuration(duration);
+            return true;
+        } catch (InvalidDurationValue e) {
+            return false;
+        }
+
     }
 
     private static PaymentContext getPaymentContext(Payment payment) {

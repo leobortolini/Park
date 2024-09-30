@@ -39,6 +39,7 @@ public class ParkAdminServiceImpl implements ParkAdminService {
             LocalDateTime now = LocalDateTime.now();
             session.setStartsAt(now);
             session.setFinishesAt(now.plus(session.getDuration()));
+            session.setStatus(ParkService.ParkStatus.VALID);
 
             parkingSessionRepository.save(session);
             return;
