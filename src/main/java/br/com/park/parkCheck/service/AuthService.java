@@ -28,7 +28,7 @@ public class AuthService {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public boolean authenticate(String username, String password){
+    public String authenticate(String username, String password) throws IllegalAccessException {
         AuthEntity authEntity = authRepository.findByUsername(username);
 
         if(authEntity != null && passwordEncoder.matches(password, authEntity.getPassword())){
@@ -36,10 +36,10 @@ public class AuthService {
             authEntity.setToken(token);
             authRepository.save(authEntity);
 
-            return true;
+            return token;
         }
 
-        return false;
+        throw new IllegalAccessException("Falha na autenticação.");
     }
 
     public String generateApiKey() {

@@ -18,14 +18,15 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody AuthRequestDTO authRequestDTO){
+    public ResponseEntity<String> login(@Valid @RequestBody AuthRequestDTO authRequestDTO) throws IllegalAccessException {
 
-        boolean authenticated = authService.authenticate(authRequestDTO.username(), authRequestDTO.password());
+        try {
+            String token = authService.authenticate(authRequestDTO.username(), authRequestDTO.password());
 
-        if (authenticated) {
-            return ResponseEntity.ok("Login realizado com sucesso!");
-        }else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login inválido.");
+            return ResponseEntity.ok("Login realizado com sucesso. \n" + "Bearer token gerado: " + token);
+
+        }catch(IllegalAccessException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login inválido. " + e.getMessage());
         }
     }
 

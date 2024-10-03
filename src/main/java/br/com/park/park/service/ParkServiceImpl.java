@@ -53,7 +53,7 @@ public class ParkServiceImpl implements ParkService {
     @Override
     public void executeParkSessionJob() {
         parkingSessionRepository.findByFinishesAtIsNotNull().forEach(parkingSession -> {
-            if (parkingSession.getFinishesAt().isBefore(LocalDateTime.now())) {
+            if (parkingSession.getFinishesAt() != null && parkingSession.getFinishesAt().isBefore(LocalDateTime.now())) {
                 parkingSession.setStatus(ParkStatus.EXPIRED);
                 parkingSessionRepository.save(parkingSession);
             }
