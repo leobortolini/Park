@@ -50,7 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         ApiKeyEntity apiKeyEntity = new ApiKeyEntity();
         apiKeyEntity.setKey((key));
-        apiKeyEntity.setValidUntil(String.valueOf(LocalDateTime.now().plusHours(4)));
+        apiKeyEntity.setValidUntil(String.valueOf(LocalDateTime.now().plusHours(24)));
 
         apiKeyRepository.save(apiKeyEntity);
 
