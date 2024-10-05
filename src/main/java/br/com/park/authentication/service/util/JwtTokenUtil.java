@@ -1,6 +1,6 @@
-package br.com.park.parkCheck.service.util;
+package br.com.park.authentication.service.util;
 
-import br.com.park.parkCheck.model.TokenParams;
+import br.com.park.authentication.model.TokenParams;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
