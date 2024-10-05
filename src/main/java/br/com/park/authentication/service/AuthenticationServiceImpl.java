@@ -1,11 +1,12 @@
-package br.com.park.parkCheck.service;
+package br.com.park.authentication.service;
 
-import br.com.park.parkCheck.model.ApiKeyEntity;
-import br.com.park.parkCheck.model.AuthEntity;
-import br.com.park.parkCheck.model.TokenParams;
-import br.com.park.parkCheck.repository.ApiKeyRepository;
-import br.com.park.parkCheck.repository.AuthRepository;
-import br.com.park.parkCheck.service.util.JwtTokenUtil;
+import br.com.park.authentication.model.ApiKeyEntity;
+import br.com.park.authentication.model.AuthEntity;
+import br.com.park.authentication.model.TokenParams;
+import br.com.park.authentication.repository.ApiKeyRepository;
+import br.com.park.authentication.repository.AuthRepository;
+import br.com.park.authentication.service.exceptions.InvalidAPIKey;
+import br.com.park.authentication.service.util.JwtTokenUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -14,21 +15,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AuthService {
+public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthRepository authRepository;
     private final ApiKeyRepository apiKeyRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
 
-    public AuthService(AuthRepository authRepository, ApiKeyRepository apiKeyRepository,
-                       PasswordEncoder passwordEncoder, JwtTokenUtil jwtTokenUtil){
+    public AuthenticationServiceImpl(AuthRepository authRepository, ApiKeyRepository apiKeyRepository,
+                                     PasswordEncoder passwordEncoder, JwtTokenUtil jwtTokenUtil){
         this.authRepository = authRepository;
         this.apiKeyRepository = apiKeyRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public String authenticate(String username, String password) throws IllegalAccessException {
+    public Token authenticate(String username, String password) throws IllegalAccessException {
         AuthEntity authEntity = authRepository.findByUsername(username);
 
         if(authEntity != null && passwordEncoder.matches(password, authEntity.getPassword())){
@@ -36,13 +37,13 @@ public class AuthService {
             authEntity.setToken(token);
             authRepository.save(authEntity);
 
-            return token;
+            return new Token("Bearer " + token);
         }
 
         throw new IllegalAccessException("Falha na autenticação.");
     }
 
-    public String generateApiKey() {
+    public APIKey generateApiKey() {
         deleteExpiredApiKeys();
 
         String key = Base64.getEncoder().encodeToString(jwtTokenUtil.generatedRandomSecret());
@@ -53,23 +54,20 @@ public class AuthService {
 
         apiKeyRepository.save(apiKeyEntity);
 
-        return apiKeyEntity.getKey();
+        return new APIKey(apiKeyEntity.getKey());
     }
 
-    public boolean validateApiKey(String apiKey){
+    public void validateApiKey(String apiKey){
         ApiKeyEntity storedApiKey = apiKeyRepository.findByKey(apiKey);
 
         if(storedApiKey == null){
-            return false;
+            throw new InvalidAPIKey("Invalid API Key");
         }
 
         LocalDateTime now = LocalDateTime.now();
 
-        if(now.isAfter(LocalDateTime.parse(storedApiKey.getValidUntil()))){
-            return false;
-        }
-
-        return true;
+        if (now.isAfter(LocalDateTime.parse(storedApiKey.getValidUntil())))
+            throw new InvalidAPIKey("Invalid API Key");
     }
 
     private void deleteExpiredApiKeys(){
@@ -79,19 +77,14 @@ public class AuthService {
         apiKeyRepository.deleteAll(expiredKeys);
     }
 
-    public boolean isTokenValid(String tokenReceived){
-        if(tokenReceived == null || tokenReceived.isEmpty()){
+    public boolean isTokenValid(String tokenReceived) {
+        if(tokenReceived == null || tokenReceived.isEmpty()) {
             return false;
         }
-
         TokenParams tokenParams = jwtTokenUtil.getTokenParams(tokenReceived);
-
         AuthEntity authEntity = authRepository.findByUsername(tokenParams.getUsername());
 
-        if(!(tokenReceived.equals(authEntity.getToken()))){
-            return false;
-        }
-        return true;
+        return tokenReceived.equals(authEntity.getToken());
     }
 
     public void initializerAuth(){

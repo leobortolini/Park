@@ -19,7 +19,6 @@ public class ParkController {
     private final PaymentService paymentService;
 
     public ParkController(ParkService parkService, PaymentService paymentService) {
-
         this.parkService = parkService;
         this.paymentService = paymentService;
     }
@@ -33,11 +32,10 @@ public class ParkController {
         } else {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
-
     }
 
     @GetMapping
-    public ResponseEntity<ParkState> getParkSessionState(@RequestParam String licensePlate) {
+    public ResponseEntity<ParkState> getParkSessionState(@RequestHeader("Authorization") String apiKey, @RequestParam String licensePlate) {
         ParkState state = parkService.getParkState(licensePlate);
 
         return ResponseEntity.status(HttpStatus.OK).body(state);

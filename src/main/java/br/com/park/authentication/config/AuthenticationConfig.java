@@ -1,4 +1,4 @@
-package br.com.park.config;
+package br.com.park.authentication.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +11,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class parkCheckConfig {
+public class AuthenticationConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(){

@@ -1,4 +1,4 @@
-package br.com.park.parkCheck.model;
+package br.com.park.authentication.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
