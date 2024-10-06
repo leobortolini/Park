@@ -1,4 +1,4 @@
-package br.com.park.authentication.model;
+package br.com.park.parkCheck.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

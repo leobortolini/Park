@@ -1,4 +1,4 @@
-package br.com.park.authentication.dto;
+package br.com.park.parkCheck.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

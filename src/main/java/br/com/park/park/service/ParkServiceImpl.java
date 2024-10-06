@@ -42,7 +42,7 @@ public class ParkServiceImpl implements ParkService {
             ParkingSession session = parkingSession.get();
 
             LocalDateTime finalTime = session.getFinishesAt();
-            Duration timeLeft = finalTime != null ? Duration.between(LocalDateTime.now(), finalTime) : null;
+            Duration timeLeft = Duration.between(LocalDateTime.now(), finalTime);
 
             return new ParkState(session.getId(), session.getCreatedAt(), finalTime, formatDuration(timeLeft), parkingSession.get().getStatus(), true);
         }

@@ -7,8 +7,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class DurationHumanReadableUtil {
 
     public static String formatDuration(Duration duration) {
-        if (duration == null)
-            return null;
         long hours = duration.toHours();
         duration = duration.minusHours(hours);
 

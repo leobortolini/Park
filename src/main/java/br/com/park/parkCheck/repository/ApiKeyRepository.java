@@ -1,6 +1,6 @@
-package br.com.park.authentication.repository;
+package br.com.park.parkCheck.repository;
 
-import br.com.park.authentication.model.ApiKeyEntity;
+import br.com.park.parkCheck.model.ApiKeyEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
