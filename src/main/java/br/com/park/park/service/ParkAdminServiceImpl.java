@@ -3,6 +3,8 @@ package br.com.park.park.service;
 import br.com.park.park.model.ParkingSession;
 import br.com.park.park.repository.ParkingSessionRepository;
 import br.com.park.park.service.exceptions.ParkingSessionNotFound;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,9 +15,11 @@ import java.util.UUID;
 public class ParkAdminServiceImpl implements ParkAdminService {
 
     private final ParkingSessionRepository parkingSessionRepository;
+    private final CacheManager cacheManager;
 
-    public ParkAdminServiceImpl(ParkingSessionRepository parkingSessionRepository) {
+    public ParkAdminServiceImpl(ParkingSessionRepository parkingSessionRepository, CacheManager cacheManager) {
         this.parkingSessionRepository = parkingSessionRepository;
+        this.cacheManager = cacheManager;
     }
 
     @Override
@@ -42,6 +46,11 @@ public class ParkAdminServiceImpl implements ParkAdminService {
             session.setStatus(ParkService.ParkStatus.VALID);
 
             parkingSessionRepository.save(session);
+            Cache parkStateCache = cacheManager.getCache("parkState");
+
+            if (parkStateCache != null) {
+                parkStateCache.evict(session.getLicensePlate());
+            }
             return;
         }
 

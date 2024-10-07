@@ -1,5 +1,6 @@
 package br.com.park.park.service;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -11,7 +12,7 @@ public interface ParkService {
     void executeParkSessionJob();
 
     record ParkReceipt(UUID identifier) { }
-    record ParkState(UUID identifier, LocalDateTime startedAt, LocalDateTime finishesAt, String remainingTime, ParkStatus status, boolean paid) { }
+    record ParkState(UUID identifier, LocalDateTime startedAt, LocalDateTime finishesAt, ParkStatus status, boolean paid) implements Serializable { }
 
     enum ParkStatus {
         VALID,
