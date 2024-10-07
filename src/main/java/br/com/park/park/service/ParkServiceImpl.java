@@ -53,14 +53,14 @@ public class ParkServiceImpl implements ParkService {
 
     @Override
     public void executeParkSessionJob() {
-        parkingSessionRepository.findByFinishesAtIsNotNull().forEach(parkingSession -> {
-            if (parkingSession.getFinishesAt() != null && parkingSession.getFinishesAt().isBefore(LocalDateTime.now())) {
+        parkingSessionRepository.findByFinishesAtIsNotNullAndStatus(ParkStatus.VALID).forEach(parkingSession -> {
+            if (parkingSession.getFinishesAt().isBefore(LocalDateTime.now())) {
                 parkingSession.setStatus(ParkStatus.EXPIRED);
                 parkingSessionRepository.save(parkingSession);
                 Cache parkStateCache = cacheManager.getCache("parkState");
-
+                String licensePlate = parkingSession.getLicensePlate();
                 if (parkStateCache != null) {
-                    parkStateCache.evict(parkingSession.getLicensePlate());
+                    parkStateCache.evict(licensePlate);
                 }
             }
         });

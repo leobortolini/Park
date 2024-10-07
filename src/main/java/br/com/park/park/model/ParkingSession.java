@@ -23,7 +23,7 @@ public class ParkingSession {
     private Duration duration;
     private String licensePlate;
     private boolean paid;
-    @OneToMany(mappedBy = "parkingSession", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "parkingSession", fetch = FetchType.LAZY)
     private List<Payment> payments = new ArrayList<>();
     @CreationTimestamp
     private LocalDateTime createdAt;
